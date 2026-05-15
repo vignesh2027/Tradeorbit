@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TradeOrbit — Live Global Trade Intelligence</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@300;400;500;600;700&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <!-- INTRO CANVAS: full-screen particle animation -->
+  <canvas id="intro-canvas"></canvas>
+
+  <!-- INTRO OVERLAY: logo + stats shown during cinematic -->
+  <div id="intro-overlay">
+    <div id="logo-container">
+      <div id="logo-letters"></div>
+      <div id="logo-tagline">GLOBAL TRADE INTELLIGENCE</div>
+    </div>
+    <div id="intro-stats">
+      <div class="intro-stat">
+        <div class="stat-value" id="stat-volume">$0</div>
+        <div class="stat-label">GLOBAL TRADE VOLUME TODAY</div>
+      </div>
+      <div class="intro-stat">
+        <div class="stat-value" id="stat-countries">0</div>
+        <div class="stat-label">COUNTRIES CONNECTED</div>
+      </div>
+      <div class="intro-stat">
+        <div class="stat-value" id="stat-ports">0</div>
+        <div class="stat-label">ACTIVE PORTS</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- NAVIGATION -->
+  <nav id="main-nav" class="hidden">
+    <div id="nav-logo">TRADE<span>ORBIT</span></div>
+    <div id="nav-links">
+      <a href="#earth-section" data-section="earth">GLOBE</a>
+      <a href="#newsroom-section" data-section="news">NEWSROOM</a>
+      <a href="#trading-section" data-section="trading">TRADING</a>
+    </div>
+    <div id="nav-right">
+      <div id="nav-time"></div>
+      <div id="nav-status"><span class="pulse-dot"></span>LIVE</div>
+    </div>
+  </nav>
+
+  <!-- TOP TICKER -->
+  <div id="ticker-top" class="hidden">
+    <div id="ticker-top-inner">
+      <div id="ticker-top-track"></div>
+    </div>
+  </div>
+
+  <!-- MAIN CONTENT -->
+  <main id="main-content" class="hidden">
+
+    <!-- SECTION 2: THE EARTH -->
+    <section id="earth-section" class="section">
+      <div id="globe-wrap">
+        <canvas id="globe-canvas"></canvas>
+        <div id="globe-hint">DRAG TO ROTATE · SCROLL TO ZOOM · CLICK CITY TO EXPLORE</div>
+      </div>
+      <div id="globe-sidebar">
+        <div class="sidebar-header">
+          <div class="sidebar-title">TOP PORTS</div>
+          <div class="sidebar-sub">LIVE SHIP TRAFFIC</div>
+        </div>
+        <div id="port-list"></div>
+        <div class="sidebar-footer">Updates every 30s</div>
+      </div>
+      <!-- City detail panel -->
+      <div id="city-panel" class="hidden">
+        <button id="city-panel-close">✕ CLOSE</button>
+        <div id="city-panel-name"></div>
+        <div id="city-panel-stats"></div>
+        <div id="city-panel-routes"></div>
+        <canvas id="city-chart" width="320" height="120"></canvas>
+      </div>
+    </section>
+
+    <!-- SECTION 3: THE NEWSROOM -->
+    <section id="newsroom-section" class="section">
+      <div id="newsroom-header">
+        <div id="newsroom-title-block">
+          <div class="section-label">LIVE INTELLIGENCE</div>
+          <h2 id="newsroom-title">TRADE NEWSROOM</h2>
+        </div>
+        <div id="sentiment-block">
+          <div class="widget-title">MARKET SENTIMENT</div>
+          <canvas id="sentiment-gauge" width="260" height="140"></canvas>
+          <div id="sentiment-text">NEUTRAL</div>
+        </div>
+        <button id="news-refresh-btn">
+          <span id="refresh-spin">↻</span> REFRESH
+        </button>
+      </div>
+      <div id="news-grid">
+        <div id="news-featured"></div>
+        <div id="news-cards-grid"></div>
+      </div>
+      <div id="news-wire-section">
+        <div class="wire-header">
+          <span>TRADE WIRE</span>
+          <span id="wire-count"></span>
+        </div>
+        <div id="wire-list"></div>
+      </div>
+      <!-- Keyword filter bar -->
+      <div id="keyword-filter-bar" class="hidden">
+        <span id="active-keyword"></span>
+        <button id="clear-keyword">✕ CLEAR FILTER</button>
+      </div>
+    </section>
+
+    <!-- SECTION 4: TRADING FLOOR -->
+    <section id="trading-section" class="section">
+      <div id="trading-header">
+        <div>
+          <div class="section-label">LIVE MARKETS</div>
+          <h2 id="trading-title">TRADING FLOOR</h2>
+        </div>
+        <div id="symbol-tabs">
+          <button class="sym-tab active" data-symbol="BTC">BTC</button>
+          <button class="sym-tab" data-symbol="ETH">ETH</button>
+          <button class="sym-tab" data-symbol="GOLD">GOLD</button>
+          <button class="sym-tab" data-symbol="OIL">OIL</button>
+          <button class="sym-tab" data-symbol="SPX">S&amp;P 500</button>
+          <button class="sym-tab" data-symbol="EURUSD">EUR/USD</button>
+        </div>
+      </div>
+      <div id="trading-body">
+        <!-- LEFT: Charts -->
+        <div id="trading-left">
+          <div id="price-hero">
+            <div id="price-symbol-label"></div>
+            <div id="current-price-wrap">
+              <span id="current-price">--</span>
+              <span id="price-change-badge"></span>
+            </div>
+            <div id="price-sub"></div>
+          </div>
+          <div id="main-chart-container"></div>
+          <div id="candle-chart-container"></div>
+        </div>
+        <!-- RIGHT: Widgets + Feed -->
+        <div id="trading-right">
+          <div id="widgets-row">
+            <div id="fear-greed-widget" class="widget-box">
+              <div class="widget-title">FEAR &amp; GREED</div>
+              <canvas id="fear-greed-canvas" width="180" height="110"></canvas>
+              <div id="fg-label">--</div>
+            </div>
+            <div id="markets-widget" class="widget-box">
+              <div class="widget-title">WORLD MARKETS</div>
+              <div id="markets-list"></div>
+            </div>
+            <div id="movers-widget" class="widget-box">
+              <div class="widget-title">TOP MOVERS</div>
+              <div id="movers-list"></div>
+            </div>
+          </div>
+          <div id="news-feed-panel">
+            <div id="feed-header">
+              <span id="feed-count">Loading stories…</span>
+              <button id="feed-refresh-btn">↻ REFRESH</button>
+            </div>
+            <div id="news-feed-wrap">
+              <div id="news-feed"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- BOTTOM TICKER -->
+  <div id="ticker-bottom" class="hidden">
+    <div id="ticker-bottom-inner">
+      <div id="ticker-bottom-track"></div>
+    </div>
+  </div>
+
+  <!-- THREE.JS IMPORTMAP -->
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+      "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+    }
+  }
+  </script>
+
+  <!-- LIGHTWEIGHT CHARTS (global LightweightCharts) -->
+  <script src="https://unpkg.com/lightweight-charts@4.1.3/dist/lightweight-charts.standalone.production.js"></script>
+
+  <!-- MAIN APP -->
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>
